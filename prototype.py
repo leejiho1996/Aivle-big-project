@@ -119,7 +119,7 @@ html = """<!DOCTYPE html>
 st.markdown(html, unsafe_allow_html=True)
 
 st.title('🚨긴급 대피 시스템')
-empty1, map1, empty2 = st.columns([0.1,0.8,0.1])
+map1, empty2 = st.columns([0.8,0.1])
 # st.dataframe(df)
 # st_data = folium_static(m, width=1000)
 
@@ -165,8 +165,9 @@ folium.Marker(center).add_to(m)
 folium.Marker([goal[1],goal[0]], icon=folium.Icon('red', icon='star')).add_to(m)
 folium.PolyLine(locations=route_data[:], tooltip='polyLine').add_to(m)
 with map1:
+    st.markdown('### 현재위치 : 부산광역시 부산진구 동성로 50')
     st_data_r = folium_static(m, width=1200)
-
+    
 
 # 스트림릿
 #-------------------------------------------------------------------------------------------------------------------------------------------
