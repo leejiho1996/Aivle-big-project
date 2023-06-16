@@ -6,7 +6,8 @@ import streamlit as st
 from streamlit_folium import st_folium, folium_static
 import pandas as pd
 # *-- 3개의 주소 geocoding으로 변환한다.(출발지, 도착지, 경유지) --*
-start = '부산광역시 부산진구 동성로 50'
+start = '서울 송파구 잠실로 209'
+s_loc = start
 goal = '부산 부산진구 전포대로175번길 22'
 # waypoint = ''
 
@@ -89,9 +90,10 @@ center = [start[1], start[0]]
 # folium.PolyLine(locations=route_data[:], tooltip='polyLine').add_to(m)
 
 # 데이터 프레임 가공----------------------------------------------------------------------------------------------------------------------------
-df = pd.read_csv('대피소샘플.csv', encoding='cp949')
+df = pd.read_csv('서울데이터_샘플.csv')
 dr = []
 distance_list = []
+
 for i in range(len(df)):
     dr.append(df['위치'][i])
 for i in dr:
@@ -101,16 +103,28 @@ for i in dr:
     distance_list.append(round(distance/1000,2))
 
 df['거리(km)'] = distance_list 
-df = df[['대피소명', '거리(km)', '위치']].copy()
+df_r = df[['위도','경도']].copy()
+df = df[['시설', '거리(km)', '위치','현재인원','최대수용인원']].copy()
 df = df.sort_values(by='거리(km)')
 df.reset_index(drop=True, inplace=True)
-df['현재인원'] = [33,126,622,958,60]
-df['최대인원'] = [59, 1952, 2240, 5240, 6242]
+# df['현재인원'] = [33,126,622,958,60]
+# df['최대인원'] = [59, 1952, 2240, 5240, 6242]
 #---------------------------------------------------------------------------------------------------------------------------------------------
 
 # 스트림릿
 #-------------------------------------------------------------------------------------------------------------------------------------------
 st.set_page_config(layout='wide')
+
+# if "center" not in st.session_state:
+#     layout = "wide"
+# else:
+#     layout = "centered" if st.session_state.center else "wide"
+
+# st.set_page_config(layout=layout)
+
+st.checkbox(
+    "Viewing on a mobile?", key="center", value=st.session_state.get("center", False)
+)
 
 html = """<!DOCTYPE html>
 <html>
@@ -161,13 +175,21 @@ for i in range(len(route)):
 route.append([float(goal[1]), float(goal[0])])
 m = folium.Map(location=center, zoom_start=16)
 route_data = route
+# st.write(df_r['위경도'][0])
+for i in range(len(df_r)):
+    folium.Marker([df_r['경도'][i], df_r['위도'][i]] , icon=folium.Icon('green', icon='star')).add_to(m)
+    
 folium.Marker(center).add_to(m)
 folium.Marker([goal[1],goal[0]], icon=folium.Icon('red', icon='star')).add_to(m)
 folium.PolyLine(locations=route_data[:], tooltip='polyLine').add_to(m)
+
 with map1:
-    st.markdown('### 현재위치 : 부산광역시 부산진구 동성로 50')
+    st.markdown('### '+s_loc)
     st_data_r = folium_static(m, width=1200)
-    
+
+# col101, col102 = st.columns((0.5 1))
+#     col101 = st.dataframe(df)    
+#     col102 = 
 
 # 스트림릿
 #-------------------------------------------------------------------------------------------------------------------------------------------
