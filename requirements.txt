@@ -1,3 +1,4 @@
 folium==0.14.0
 pandas==1.5.3
 streamlit_folium
+haversine
