@@ -75,11 +75,27 @@ def get_optimal_route(start, goal, option='trafast' ):
 #---------------------------------------------------------------------------------------------------------------------------------------------
 st.set_page_config(layout='wide')
 
+dis, empt= st.columns([0.1,1])
+with dis:
+    dis_list = ['지진', '공습']
+    dis = st.selectbox('재난선택',dis_list, label_visibility="hidden" )
+with empt:
+    pass
+
+st.write('')
+st.write('')
+
 html = """<!DOCTYPE html>
 <html>
 <img src = "https://aivle.edu.kt.co.kr/tpl/001/img/common/logo.svg" alt = 에이블로고 style="float: left; width:100px; height:30px;"> </img>
 </html>"""
 st.markdown(html, unsafe_allow_html=True)
+
+
+if dis == '지진':
+    disaster = '옥외대피소_포화도추가.csv' # 민방위 시설 프로토타입을 보고싶을 시 '민방위_데이터_최종.csv' 변경!
+else:
+    disaster = '민방위_데이터_최종.csv'
 
 st.title('🚨긴급 대피 시스템')
 
@@ -101,7 +117,7 @@ center = [start[1], start[0]]
 center_tuple = (float(start[1]), float(start[0]))
 
 # 데이터 프레임 가공----------------------------------------------------------------------------------------------------------------------------
-df = pd.read_csv('옥외대피소_포화도추가.csv')
+df = pd.read_csv(disaster)
 dr = []
 distance_list = []
 
